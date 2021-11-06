@@ -1,7 +1,7 @@
 import SwiftUI
  
  
- 
+ //this is lesson 1
 
 // This is the main view or the main box
 // a view is a input and output area
