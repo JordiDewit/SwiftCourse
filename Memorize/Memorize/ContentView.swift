@@ -8,7 +8,7 @@ import SwiftUI
 struct ContentView: View //ContentView behaves like a view
 {
     //array of emojis
-    var emojis = ["🚗", "🚕", "🚌", "🚎","🏎","🚓","🚑","🛻","🚠","🛵","🚝","✈️","🚀", "t", "p", "d"]
+    var emojis = ["🚗", "🚕", "🚌", "🚎","🏎","🚓","🚑","🛻","🚠","🛵","🚝","✈️","🚀", "test1", "test2", "test3"]
     @State var emojiCount = 4
     
     var body: some View //body behaves also like another view = "some view"
@@ -32,43 +32,10 @@ struct ContentView: View //ContentView behaves like a view
                 .padding()
                 .foregroundColor(/*@START_MENU_TOKEN@*/.red/*@END_MENU_TOKEN@*/)//color of border is red
             }
-            Spacer()
-            HStack
-            {
-                remove
-                Spacer() // This is used to add space between buttons
-                add
-            }
-            .padding(.horizontal)
-            .font(.largeTitle)
          
         }
      
     }
-    
-    //buttons
-    var remove: some View {
-        
-        Button(action: { // an action
-            if emojiCount>1
-            {
-                emojiCount -= 1
-            }
-        }, label: { // a label
-            Image(systemName: "minus.circle")
-        })
-    }
-    var add: some View {
-        Button(action: {
-            if emojiCount<emojis.count
-            {
-               emojiCount += 1
-            }
-        }, label: {
-            Image(systemName: "plus.circle")
-        })
-    }
-    
 }
     
 // this is a card view
