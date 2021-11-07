@@ -7,9 +7,8 @@ import SwiftUI
 // a view is a input and output area
 struct ContentView: View //ContentView behaves like a view
 {
-    //array of emojis
-    var emojis = ["🚗", "🚕", "🚌", "🚎","🏎","🚓","🚑","🛻","🚠","🛵","🚝","✈️","🚀", "test1", "test2", "test3"]
-    @State var emojiCount = 4
+    @ObservedObject var viewModel: EmojiViewModel //@observedObject rebuild at change
+   
     
     var body: some View //body behaves also like another view = "some view"
     {
@@ -23,28 +22,28 @@ struct ContentView: View //ContentView behaves like a view
                 {
                     //repeating card views to have multiple cards
                     //use every emoji in the emoji array
-                    ForEach(emojis[0..<emojiCount], id: \.self)
-                    {   emoji in // /.self is used to identify each element
-                        cardView(content: emoji)
+                    ForEach(viewModel.cards)
+                    {   card in // /.self is used to identify each element
+                        cardView(card: card)
                             .aspectRatio(2/3, contentMode: .fit) // provides a nice card shape
+                            .onTapGesture
+                            {
+                                viewModel.choose(card: card)
+                            }
                     }
                 }
-                .padding()
-                .foregroundColor(/*@START_MENU_TOKEN@*/.red/*@END_MENU_TOKEN@*/)//color of border is red
+              
             }
-         
+            .padding()
+            .foregroundColor(/*@START_MENU_TOKEN@*/.red/*@END_MENU_TOKEN@*/)//color of border is red
         }
-     
     }
 }
     
 // this is a card view
 struct cardView: View
 {
-    var content: String
-    // you can't have variables without a value
-    // use @State when this variable is changed and build an other view
-    @State var isFaceUp: Bool = true
+    let card: MemoryGame<String>.Card
     
     var body: some View
     {
@@ -52,22 +51,21 @@ struct cardView: View
         {
             let shape = RoundedRectangle(cornerRadius: 20.0) //you use let when you are defining a constant
             
-             if isFaceUp
+            if card.isFaceUp
              {
                 shape
                     .fill() // creating a white background
                     .foregroundColor(.white)
                 shape
                     .stroke(lineWidth: 3) //border with a width of 3px
-                Text(content)
+                Text(card.content)
                     .font(.largeTitle)
+             }else if card.isMatched {
+                 shape.opacity(0) //you can't see the matched cards anymore
              }else
              {
                 shape.fill()
              }
-        }
-        .onTapGesture { // when you tap on a cardview it will change this variable
-            isFaceUp = !isFaceUp
         }
     }
 }
@@ -112,9 +110,10 @@ struct cardView: View
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        let game = EmojiViewModel()
+        ContentView(viewModel: game)
             .preferredColorScheme(.light) //dark and light mode
-        ContentView()
+        ContentView(viewModel: game)
             .preferredColorScheme(.dark)
     }
 }
