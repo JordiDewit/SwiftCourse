@@ -6,11 +6,18 @@ struct MemoryGame<CardContent> where CardContent: Equatable//generic type for th
     // attribute list of cards
     private(set) var cards: Array<Card> //only the choose function can modify the array
     
-    
-    
     private var indexOfTheOneAndOnlyFaceUpCard: Int?
-    
-    
+    {
+        get // getter
+        {
+            return cards.indices.filter({ cards[$0].isFaceUp }).oneAndOnly //extension method
+  
+        }
+        set //setter
+        {
+            cards.indices.forEach({cards[$0].isFaceUp = ($0 == newValue)})
+        }
+    }
     
     
     //functions
@@ -27,17 +34,12 @@ struct MemoryGame<CardContent> where CardContent: Equatable//generic type for th
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
                 }
-                indexOfTheOneAndOnlyFaceUpCard = nil
+                cards[chosenIndex].isFaceUp = true
             }else
             {
-                for index in 0..<cards.count
-                {
-                    cards[index].isFaceUp = false
-                }
                 indexOfTheOneAndOnlyFaceUpCard = chosenIndex
+                
             }
-            cards[chosenIndex].isFaceUp.toggle()
-            //reverse value
         }
     }
     
@@ -46,7 +48,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable//generic type for th
     //init
     init(numberOfPairsOfCards: Int, createContent: (Int) -> CardContent)
     {
-        cards = Array<Card>()
+        cards = []
         // add numberOfPairsOfCards x 2 cards to cards array
         for pairIndex in 0..<numberOfPairsOfCards
         {
@@ -62,11 +64,26 @@ struct MemoryGame<CardContent> where CardContent: Equatable//generic type for th
     //card
     struct Card: Identifiable //Card is a part of the memorygame and behaves like a identifiable
     {
-        var id: Int // a unique id
+        let id: Int // a unique id
         
         var isFaceUp: Bool
         var isMatched: Bool
-        var content: CardContent //generic or don't care type
+        let content: CardContent //generic or don't care type
+    }
+}
+
+
+extension Array{
+    var oneAndOnly: Element? //optional don't care
+    {
+        if self.count == 1
+        {
+            return self.first //[0]
+        }
+        else
+        {
+            return nil
+        }
     }
 }
 
