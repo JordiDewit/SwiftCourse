@@ -36,6 +36,14 @@ class EmojiViewModel: ObservableObject// observer for changes in the view(presen
     {
         model.choose(card: card)
     }
+    
+    func shuffle(){
+        model.shuffle()
+    }
+    
+    func restart(){
+        model = EmojiViewModel.createMemoryGame()
+    }
 
 }
 
