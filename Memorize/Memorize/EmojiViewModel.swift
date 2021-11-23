@@ -26,7 +26,7 @@ class EmojiViewModel: ObservableObject// observer for changes in the view(presen
     
     static func createMemoryGame() -> MemoryGame<String>
     {
-        MemoryGame<String>(numberOfPairsOfCards: 5, createContent: { pairIndex in
+        MemoryGame<String>(numberOfPairsOfCards: 8, createContent: { pairIndex in
                   emojis[pairIndex]
             })
     }
@@ -38,3 +38,4 @@ class EmojiViewModel: ObservableObject// observer for changes in the view(presen
     }
 
 }
+
