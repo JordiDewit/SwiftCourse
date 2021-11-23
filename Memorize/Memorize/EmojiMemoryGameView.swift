@@ -12,31 +12,23 @@ struct EmojiMemoryGameView: View //ContentView behaves like a view
     
     var body: some View //body behaves also like another view = "some view"
     {
-        
-        VStack
-        {
-            Text("Memorize")
-                .font(.largeTitle)
-            
-            ScrollView
-            {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 65, maximum: 75))]) // stack of elements next to eachother
-                {
-                    //repeating card views to have multiple cards
-                    //use every emoji in the emoji array
-                    ForEach(viewModel.cards)
-                    {   card in // /.self is used to identify each element
-                        cardView(card)
-                            .aspectRatio(2/3, contentMode: .fit) // provides a nice card shape
-                            .onTapGesture
-                            {
-                                viewModel.choose(card: card)
-                            }
-                    }
-                }
-            }
-            .padding()
+            AspectVGrid(items: viewModel.cards, aspectRatio: 2/3, content: { card in
+               createCardView(for: card)
+            })
+            .padding(.horizontal)
             .foregroundColor(/*@START_MENU_TOKEN@*/.red/*@END_MENU_TOKEN@*/)//color of border is red
+    }
+    
+    @ViewBuilder
+    private func createCardView(for card: EmojiViewModel.Card) -> some View {
+        if card.isMatched && !card.isFaceUp {
+            Rectangle().opacity(0)
+        }else {
+            cardView(card)
+                .padding(4)
+                .onTapGesture{
+                    viewModel.choose(card: card)
+                }
         }
     }
 }
@@ -66,6 +58,9 @@ struct cardView: View
                         .foregroundColor(.white)
                     shape
                         .stroke(lineWidth: DrawingConstants.linewidth) //border with a width of 3px
+                    Pie(startAngle: Angle(degrees: 0-90), endAngle: Angle(degrees: 90-90)) // pie shape
+                        .opacity(0.5)
+                        .padding(DrawingConstants.circlePadding)
                     Text(card.content)
                         .font(font(in: geometry.size))
                  }else if card.isMatched {
@@ -81,31 +76,12 @@ struct cardView: View
     }
     
     private struct DrawingConstants {
-        static let cornerRadius: CGFloat = 20
-        static let linewidth: CGFloat = 3
-        static let fontScale: CGFloat = 0.9
+        static let cornerRadius: CGFloat  = 15
+        static let linewidth: CGFloat     = 3
+        static let fontScale: CGFloat     = 0.65
+        static let circlePadding: CGFloat = 2
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -113,9 +89,8 @@ struct cardView: View
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let game = EmojiViewModel()
-        EmojiMemoryGameView(viewModel: game)
-            .preferredColorScheme(.light) //dark and light mode
-        EmojiMemoryGameView(viewModel: game)
-            .preferredColorScheme(.dark)
+        game.choose(card: game.cards.first!)
+        return EmojiMemoryGameView(viewModel: game).preferredColorScheme(.dark)
+        
     }
 }
