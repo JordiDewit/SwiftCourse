@@ -1,1 +1,2 @@
-# SwiftCourse
+# Memorize game
+## Stanford university course
